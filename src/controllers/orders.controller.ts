@@ -6,6 +6,7 @@ import {
   updateExistingOrder,
   removeOrder,
 } from "../services/orders.service";
+import { publishOrderCreated } from "../services/orderPublisher";
 
 export async function getAllOrders(req: Request, res: Response) {
   try {
@@ -32,6 +33,7 @@ export async function getOrderById(req: Request, res: Response) {
 export async function createOrder(req: Request, res: Response) {
   try {
     const newOrder = await createNewOrder(req.body);
+    await publishOrderCreated(newOrder);
     return res.status(201).json(newOrder);
   } catch (error: any) {
     return res.status(400).json({ error: error.message });
