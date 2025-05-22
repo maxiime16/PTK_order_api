@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 import {
   findAllOrders,
   findOrderById,
   createNewOrder,
   updateExistingOrder,
   removeOrder,
-} from "../services/orders.service";
-import { publishOrderCreated } from "../services/orderPublisher";
+} from '../services/orders.service';
+import { publishOrderCreated } from '../services/orderPublisher';
 
 export async function getAllOrders(req: Request, res: Response) {
   try {
@@ -22,7 +22,7 @@ export async function getOrderById(req: Request, res: Response) {
     const { id } = req.params;
     const order = await findOrderById(id);
     if (!order) {
-      return res.status(404).json({ message: "Commande introuvable" });
+      return res.status(404).json({ message: 'Commande introuvable' });
     }
     return res.json(order);
   } catch (error: any) {
@@ -45,7 +45,7 @@ export async function updateOrder(req: Request, res: Response) {
     const { id } = req.params;
     const updated = await updateExistingOrder(id, req.body);
     if (!updated) {
-      return res.status(404).json({ message: "Commande introuvable" });
+      return res.status(404).json({ message: 'Commande introuvable' });
     }
     return res.json(updated);
   } catch (error: any) {
@@ -58,9 +58,9 @@ export async function deleteOrder(req: Request, res: Response) {
     const { id } = req.params;
     const deleted = await removeOrder(id);
     if (!deleted) {
-      return res.status(404).json({ message: "Commande introuvable" });
+      return res.status(404).json({ message: 'Commande introuvable' });
     }
-    return res.json({ message: "Commande supprimée avec succès" });
+    return res.json({ message: 'Commande supprimée avec succès' });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }

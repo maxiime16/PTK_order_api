@@ -1,6 +1,6 @@
-import { getChannel } from "../lib/rabbitmq";
-import { createNewOrder } from "./orders.service";
-import { publishOrderCreated } from "./orderPublisher";
+import { getChannel } from '../lib/rabbitmq';
+import { createNewOrder } from './orders.service';
+import { publishOrderCreated } from './orderPublisher';
 
 /**
  * Consomme la queue "orders.create" pour créer une commande en base
@@ -8,7 +8,7 @@ import { publishOrderCreated } from "./orderPublisher";
  */
 export async function consumeCreateOrder() {
   const channel = getChannel();
-  const queueName = "orders.create";
+  const queueName = 'orders.create';
 
   // Assure la création de la queue
   await channel.assertQueue(queueName, { durable: true });

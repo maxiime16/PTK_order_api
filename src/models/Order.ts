@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const orderItemSchema = new Schema(
   {
@@ -6,7 +6,7 @@ const orderItemSchema = new Schema(
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
   },
-  { _id: false }
+  { _id: false },
 ); // _id: false => on n’a pas besoin d’un sous-document ID
 
 const orderSchema = new Schema(
@@ -17,11 +17,11 @@ const orderSchema = new Schema(
     },
     items: [orderItemSchema],
     total: { type: Number, required: true },
-    status: { type: String, default: "PENDING" },
+    status: { type: String, default: 'PENDING' },
   },
   {
     timestamps: true, // createdAt, updatedAt automatiques
-  }
+  },
 );
 
-export const Order = model("Order", orderSchema);
+export const Order = model('Order', orderSchema);
