@@ -1,11 +1,11 @@
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import compression from "compression";
-import { connectDB } from "./config/mongoose";
-import { connectRabbitMQ } from "./lib/rabbitmq";
-import ordersRouter from "./routes/orders.routes";
-import { consumeCreateOrder } from "./services/orderConsumer";
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import { connectDB } from './config/mongoose.js';
+import { connectRabbitMQ } from './lib/rabbitmq.js';
+import ordersRouter from './routes/orders.routes.js';
+import { consumeCreateOrder } from './services/orderConsumer.js';
 
 const app = express();
 
@@ -16,7 +16,7 @@ app.use(helmet());
 app.use(compression());
 
 // Routes
-app.use("/orders", ordersRouter);
+app.use('/orders', ordersRouter);
 
 const PORT_ORDER = process.env.PORT_ORDER;
 
@@ -34,7 +34,7 @@ async function startServer() {
       console.log(`✅ Evertything is OK, Orders API running on port ${PORT_ORDER}`);
     });
   } catch (error) {
-    console.error("Erreur lors du démarrage du serveur :", error);
+    console.error('Erreur lors du démarrage du serveur :', error);
     process.exit(1);
   }
 }
