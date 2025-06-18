@@ -2,10 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
-import { connectDB } from './config/mongoose';
-import { connectRabbitMQ } from './lib/rabbitmq';
-import ordersRouter from './routes/orders.routes';
-import { consumeCreateOrder } from './services/orderConsumer';
+import { connectDB } from './config/mongoose.js';
+import { connectRabbitMQ } from './lib/rabbitmq.js';
+import ordersRouter from './routes/orders.routes.js';
+import { consumeCreateOrder } from './services/orderConsumer.js';
 
 const app = express();
 

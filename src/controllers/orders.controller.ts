@@ -5,8 +5,8 @@ import {
   createNewOrder,
   updateExistingOrder,
   removeOrder,
-} from '../services/orders.service';
-import { publishOrderCreated } from '../services/orderPublisher';
+} from '../services/orders.service.js';
+import { publishOrderCreated } from '../services/orderPublisher.js';
 
 export async function getAllOrders(req: Request, res: Response) {
   try {

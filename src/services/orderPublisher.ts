@@ -1,4 +1,4 @@
-import { getChannel } from '../lib/rabbitmq';
+import { getChannel } from '../lib/rabbitmq.js';
 
 /**
  * Publie un message "order.created" dans RabbitMQ

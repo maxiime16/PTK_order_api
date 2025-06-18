@@ -1,6 +1,6 @@
-import { getChannel } from '../lib/rabbitmq';
-import { createNewOrder } from './orders.service';
-import { publishOrderCreated } from './orderPublisher';
+import { getChannel } from '../lib/rabbitmq.js';
+import { createNewOrder } from './orders.service.js';
+import { publishOrderCreated } from './orderPublisher.js';
 
 /**
  * Consomme la queue "orders.create" pour créer une commande en base
