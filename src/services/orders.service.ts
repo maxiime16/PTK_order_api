@@ -1,4 +1,4 @@
-import { Order } from "../models/Order";
+import { Order } from '../models/Order.js';
 
 export async function findAllOrders() {
   return Order.find();

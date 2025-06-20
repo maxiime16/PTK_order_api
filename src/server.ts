@@ -1,9 +1,11 @@
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import compression from "compression";
-import { connectDB } from "./config/mongoose";
-import ordersRouter from "./routes/orders.routes";
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import { connectDB } from './config/mongoose.js';
+import { connectRabbitMQ } from './lib/rabbitmq.js';
+import ordersRouter from './routes/orders.routes.js';
+import { consumeCreateOrder } from './services/orderConsumer.js';
 
 const app = express();
 
@@ -14,12 +16,27 @@ app.use(helmet());
 app.use(compression());
 
 // Routes
-app.use("/orders", ordersRouter);
+app.use('/orders', ordersRouter);
 
-// Server start
-const PORT = process.env.PORT || 3002;
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`✅ Orders API running on port ${PORT}`);
-  });
-});
+const PORT_ORDER = process.env.PORT_ORDER;
+
+async function startServer() {
+  try {
+    // On attend la connexion MongoDB et RabbitMQ
+    await connectDB();
+    await connectRabbitMQ();
+
+    // Démarrer le consumer qui écoute "orders.create"
+    await consumeCreateOrder();
+
+    // On démarre ensuite le serveur
+    app.listen(PORT_ORDER, () => {
+      console.log(`✅ Evertything is OK, Orders API running on port ${PORT_ORDER}`);
+    });
+  } catch (error) {
+    console.error('Erreur lors du démarrage du serveur :', error);
+    process.exit(1);
+  }
+}
+
+startServer();
