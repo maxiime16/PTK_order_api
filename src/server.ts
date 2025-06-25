@@ -9,7 +9,6 @@ import { connectRabbitMQ } from './lib/rabbitmq.js';
 import { requestLogger } from './lib/loggerMiddleware.js';
 import { metricsMiddleware } from './lib/metricsMiddleware.js';
 
-
 const app = express();
 
 // Middlewares
