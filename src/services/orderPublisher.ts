@@ -1,23 +1,34 @@
 import { getChannel } from '../lib/rabbitmq.js';
+import jwt from 'jsonwebtoken';
 
 /**
- * Publie un message "order.created" dans RabbitMQ
- * pour informer les autres micro-services qu'une commande est créée.
+ * Publie un message "order.created" avec un JWT signé
+ * pour sécuriser la communication inter-service.
  */
 export async function publishOrderCreated(newOrder: any) {
   const channel = getChannel();
-  const queueName = 'order.created';
+  const exchange = 'orders';
+  const routingKey = 'order.created';
 
-  await channel.assertQueue(queueName, { durable: true });
-  channel.sendToQueue(
-    queueName,
-    Buffer.from(
-      JSON.stringify({
-        event: 'order.created',
-        data: newOrder,
-      }),
-    ),
+  // On s'assure que l'exchange existe
+  await channel.assertExchange(exchange, 'topic', { durable: true });
+
+  // Génération du JWT
+  const token = jwt.sign(
+    { service: 'orders-api' }, // contenu du token
+    process.env.SERVICE_SECRET as string, // clé secrète partagée
+    { expiresIn: '5m' }, // token valide 5 minutes
   );
 
-  console.log(`🚀 Published "order.created" for orderId=${newOrder._id}`);
+  // Construction du message sécurisé
+  const message = {
+    event: routingKey,
+    data: newOrder,
+    token,
+  };
+
+  // Publication du message
+  channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(message)), { persistent: true });
+
+  console.log(`🚀 Published "${routingKey}" for orderId=${newOrder._id}`);
 }

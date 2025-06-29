@@ -1,7 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import dotenv from 'dotenv';
 import compression from 'compression';
+import rateLimit from 'express-rate-limit';
 import router from './routes/orders.routes.js';
 import { register } from './config/metrics.js';
 import { connectDB } from './config/mongoose.js';
@@ -10,14 +12,31 @@ import { requestLogger } from './lib/loggerMiddleware.js';
 import { metricsMiddleware } from './lib/metricsMiddleware.js';
 
 const app = express();
+// Configuration des origines autorisées
+const allowedOrigins = process.env.NODE_ENV === 'production' ? ['https://payetonkawa.fr'] : ['*'];
+// Configuration de la limite de taux
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requêtes max par IP
+  message: 'Trop de requêtes. Réessaie plus tard.',
+});
+
+// Configuration de dotenv
+dotenv.config();
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
 app.use(helmet());
+app.use(limiter);
 app.use(compression());
 app.use(requestLogger);
 app.use(metricsMiddleware);
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  }),
+);
 
 // Routes
 app.use('/orders', router);
@@ -29,7 +48,7 @@ app.get('/metrics', async (req, res) => {
 
 const PORT_ORDER = process.env.PORT_ORDER;
 
-async function startServer() {
+export async function startServer() {
   try {
     // On attend la connexion MongoDB et RabbitMQ
     await connectDB();
@@ -47,4 +66,4 @@ async function startServer() {
   }
 }
 
-startServer();
+export default app;
